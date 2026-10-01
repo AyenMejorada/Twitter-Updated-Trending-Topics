@@ -3,7 +3,7 @@
 A small static site that shows the top 25 trending topics on X for the
 Philippines as a horizontal bar chart (Chart.js).
 
-Live site: https://ayenmejorada.github.io/fcbdataviz/
+Live site: [https://ayenmejorada.github.io/fcbdataviz/](https://ayenmejorada.github.io/Twitter-Updated-Trending-Topics/)
 
 Last updated: October 1, 2026
 
