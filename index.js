@@ -124,6 +124,16 @@ fetch("./trends.json", { cache: "no-store" })
   .then((data) => {
     const trends = Array.isArray(data && data.trends) ? data.trends : [];
 
+    // Before the first scheduled run, trends.json is an empty placeholder
+    // (no lastUpdated, no trends). Explain that rather than showing a
+    // confusing generic error.
+    if (trends.length === 0) {
+      throw new Error(
+        "No trends have been published yet. Run the \"Update trends\" " +
+          "GitHub Action, then reload this page."
+      );
+    }
+
     if (trends.length < TREND_COUNT) {
       throw new Error(
         `Not enough trend data to display (found ${trends.length}, ` +

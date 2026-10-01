@@ -19,8 +19,12 @@ client. Instead:
    only) to `trends.json`, along with a `lastUpdated` timestamp.
 3. The page (`index.js`) fetches `./trends.json` and renders the chart.
 
+`trends.json` ships as an empty placeholder (`lastUpdated: null`, no trends).
+Until the workflow runs for the first time, the page shows a message asking you
+to run the "Update trends" Action rather than any fake topics.
+
 If the API call fails, the workflow keeps the previous `trends.json` and
-commits nothing. The site never shows fake or empty data. If the data is older
+commits nothing. The site never shows fabricated data. If the data is older
 than 24 hours, the page shows a "data may be stale" notice.
 
 ## Why the chart uses rank, not volume
@@ -80,6 +84,7 @@ the script exits with an error and leaves the existing `trends.json` unchanged.
 ## Files
 
 - `index.html` and `index.js`: the static front end and chart.
-- `trends.json`: the latest trends data (name, rank, and `lastUpdated`).
+- `trends.json`: the latest trends data (name, rank, and `lastUpdated`). Starts
+  as an empty placeholder and is overwritten by the workflow.
 - `scripts/update-trends.js`: fetches and writes `trends.json`.
 - `.github/workflows/update-trends.yml`: the scheduled refresh workflow.
