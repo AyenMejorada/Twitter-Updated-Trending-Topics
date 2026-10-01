@@ -24,14 +24,14 @@ const API_URL = `https://${RAPIDAPI_HOST}/twitter/request.php`;
 // Earth ID" location code). Override with the WOEID env var if needed.
 const WOEID = process.env.WOEID || "23424934";
 
+// Throwing (rather than calling process.exit here) gives the script a single
+// exit path in run()'s catch. That way no code runs after a failure, so a
+// failed fetch can never fall through and overwrite trends.json.
 function fail(message) {
-  // Keep the previous trends.json intact. Signal failure to the workflow so
-  // it skips the commit step.
-  console.error(`update-trends failed: ${message}`);
-  process.exit(1);
+  throw new Error(message);
 }
 
-async function main() {
+async function run() {
   const apiKey = process.env.RAPIDAPI_KEY;
   if (!apiKey) {
     fail("RAPIDAPI_KEY is not set. Add it as a GitHub Actions secret.");
@@ -52,6 +52,7 @@ async function main() {
     fail(`network error contacting the provider: ${err.message}`);
   }
 
+  console.log(`Provider responded with HTTP ${res.status}.`);
   if (!res.ok) {
     fail(`provider returned HTTP ${res.status}`);
   }
@@ -97,4 +98,9 @@ async function main() {
   );
 }
 
-main();
+run().catch((err) => {
+  // Single exit path for every failure. trends.json is never written on this
+  // path, so the previous file is preserved. The API key is never logged.
+  console.error(`update-trends failed: ${err.message}`);
+  process.exit(1);
+});
