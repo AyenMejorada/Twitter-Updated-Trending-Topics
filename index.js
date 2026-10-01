@@ -1,145 +1,145 @@
-console.log("Hello World!");
+// Trending Topics on X (formerly Twitter)
+//
+// Data comes from ./trends.json, which is refreshed by a scheduled GitHub
+// Actions workflow (see .github/workflows/update-trends.yml). The browser
+// never talks to the trends provider directly, so there is no API key here.
+//
+// The chart plots trend RANK, not tweet volume. The free data provider no
+// longer returns real volume numbers (it returns a flat placeholder for
+// every trend), so a volume chart would be meaningless. See README.
 
-// retrieves html code of the selected element
-// document means HTML
-const dateElement = document.getElementById('date');
+const TREND_COUNT = 25;
+const STALE_AFTER_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-console.log(dateElement);
+// Set the header date to today.
+const dateElement = document.getElementById("date");
+const dateOptions = { year: "numeric", month: "long", day: "numeric" };
+dateElement.innerHTML = new Date().toLocaleDateString("en-US", dateOptions);
 
-// Date() constructor will allow us to get the current date + time
-let currentDate = new Date();
+const statusElement = document.getElementById("status");
 
-console.log(currentDate);
-
-// to remove details that we don't need in our date
-let dateOptions = {year: 'numeric', month: 'long', day: 'numeric'};
-
-// .innerHTML is used to set the content of the HTML element
-dateElement.innerHTML = currentDate.toLocaleDateString('en-US', dateOptions);
-
-// Rapid APU code to retrieve trending twitter topics
-const url = 'https://twitter-trends5.p.rapidapi.com/twitter/request.php';
-const options = {
-	method: 'POST',
-	headers: {
-		'x-rapidapi-key': 'b970e13938msh2242250cb834046p1db247jsn41586985d1ce',
-		'x-rapidapi-host': 'twitter-trends5.p.rapidapi.com',
-		'Content-Type': 'application/x-www-form-urlencoded'
-	},
-	body: new URLSearchParams({woeid: '23424934'})
-};
-
-/*
-let myPost = {
-    name: "Lee Sung Kyung",
-    queryUrl: "search?q=%22Lee+Sung+Kyung%22",
-    volume: 31799,
-    followers: 3895734
+function showError(message) {
+  if (statusElement) {
+    statusElement.textContent = message;
+    statusElement.className = "alert alert-danger text-center";
+    statusElement.hidden = false;
+  }
+  console.error(message);
 }
 
-console.log(myPost);
-console.log(myPost.name);
-console.log(myPost.queryUrl);
-console.log(myPost.volume);
-console.log(myPost.followers);
+function showStatus(lastUpdated) {
+  if (!statusElement) return;
 
-let graphData = [
-    // index: 0
-    {name: "#PorDeeReunion", queryUrl: "search?q=%23PorDeeReunion", volume: 67000},
-    // index: 1
-	{name: "#BGYO3rdAnniversary", queryUrl: "search?q=%23BGYO3rdAnniversary", volume: 27400}
-]
+  const updatedDate = new Date(lastUpdated);
+  const readable = isNaN(updatedDate.getTime())
+    ? "unknown"
+    : updatedDate.toLocaleString("en-US");
 
-console.log(graphData);
-console.log(graphData[1]);
+  const ageMs = Date.now() - updatedDate.getTime();
+  const isStale = isNaN(updatedDate.getTime()) || ageMs > STALE_AFTER_MS;
 
-console.log(graphData[1].name);
-console.log(graphData);
+  if (isStale) {
+    statusElement.textContent =
+      `Last updated: ${readable}. This data may be stale (older than 24 hours).`;
+    statusElement.className = "alert alert-warning text-center";
+  } else {
+    statusElement.textContent = `Last updated: ${readable}`;
+    statusElement.className = "alert alert-secondary text-center";
+  }
+  statusElement.hidden = false;
+}
 
-graphData.push(myPost);
-console.log(graphData);
-*/
+function renderChart(topics, ranks) {
+  const myChart = document.getElementById("myChart");
 
-let graphData = [];
+  // Bars are inverted rank so that rank 1 draws as the longest bar.
+  const barLengths = ranks.map((rank) => TREND_COUNT - rank + 1);
 
-fetch(url, options)
-.then(res => res.json())
-.then (data => {
-    console.log(data);
+  const palette = [
+    "rgba(255, 99, 132, 0.2)",
+    "rgba(255, 159, 64, 0.2)",
+    "rgba(255, 205, 86, 0.2)",
+    "rgba(75, 192, 192, 0.2)",
+    "rgba(54, 162, 235, 0.2)",
+    "rgba(153, 102, 255, 0.2)",
+    "rgba(201, 203, 207, 0.2)",
+  ];
+  const borders = [
+    "rgb(255, 99, 132)",
+    "rgb(255, 159, 64)",
+    "rgb(255, 205, 86)",
+    "rgb(75, 192, 192)",
+    "rgb(54, 162, 235)",
+    "rgb(153, 102, 255)",
+    "rgb(201, 203, 207)",
+  ];
 
-    console.log(graphData.length);
+  const backgroundColor = topics.map((_, i) => palette[i % palette.length]);
+  const borderColor = topics.map((_, i) => borders[i % borders.length]);
 
-    for(let i = 0; i < 25; i++) {
-        // command to insert this in the graphData
-        graphData.push(
-            {
-                "name": data.trends[i].name,
-                "volume": data.trends[i].volume
-            }
-        )
+  new Chart(myChart, {
+    type: "bar",
+    data: {
+      labels: topics,
+      datasets: [
+        {
+          label: "Trend rank (higher bar = higher rank)",
+          data: barLengths,
+          borderWidth: 2,
+          backgroundColor: backgroundColor,
+          borderColor: borderColor,
+          hoverBackgroundColor: borderColor,
+        },
+      ],
+    },
+    options: {
+      indexAxis: "y",
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            // Show the actual rank behind the inverted bar length.
+            callback: (value) => `#${TREND_COUNT - value + 1}`,
+          },
+        },
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `Rank #${TREND_COUNT - ctx.parsed.x + 1}`,
+          },
+        },
+      },
+    },
+  });
+}
+
+fetch("./trends.json", { cache: "no-store" })
+  .then((res) => {
+    if (!res.ok) {
+      throw new Error(`Could not load trends.json (HTTP ${res.status}).`);
+    }
+    return res.json();
+  })
+  .then((data) => {
+    const trends = Array.isArray(data && data.trends) ? data.trends : [];
+
+    if (trends.length < TREND_COUNT) {
+      throw new Error(
+        `Not enough trend data to display (found ${trends.length}, ` +
+          `need ${TREND_COUNT}). Please try again later.`
+      );
     }
 
-    let topics = graphData.map(object => {
-        console.log(object);
-        console.log(object.name);
-        return object.name;
-    })
+    const slice = trends.slice(0, TREND_COUNT);
+    const topics = slice.map((t) => t.name);
+    const ranks = slice.map((t, i) => (typeof t.rank === "number" ? t.rank : i + 1));
 
-    console.log(topics);
-
-    let volumes = graphData.map(object => {
-        return object.volume
-    })
-
-    console.log(volumes);
-
-    // myChart is the chart that we will use
-    const myChart = document.getElementById('myChart');
-
-    let barChart = new Chart(myChart, {
-        type: 'bar',
-        data: {
-            labels: topics,
-            datasets: [{
-                labels: '# of tweets/xeets',
-                data: volumes,
-                borderWidth: 2,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 205, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(201, 203, 207, 0.2)'
-                ],
-                borderColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(255, 159, 64)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)',
-                    'rgb(54, 162, 235)',
-                    'rgb(153, 102, 255)',
-                    'rgb(201, 203, 207)'
-                ],
-                hoverBackgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(255, 159, 64)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)',
-                    'rgb(54, 162, 235)',
-                    'rgb(153, 102, 255)',
-                    'rgb(201, 203, 207)'
-                ]
-            }]
-        },
-        options: {
-        indexAxis: 'y',
-        scales: {
-            y: {
-            beginAtZero: true
-            }
-        }
-        }
-    });
-})
+    showStatus(data.lastUpdated);
+    renderChart(topics, ranks);
+  })
+  .catch((err) => {
+    showError(
+      `Sorry, trending topics could not be loaded right now. ${err.message}`
+    );
+  });

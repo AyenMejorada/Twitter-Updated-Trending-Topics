@@ -6,7 +6,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>Twitter Trending Topics</title>
+    <title>X Trending Topics</title>
 
     <style>
         footer {
@@ -17,13 +17,13 @@
             padding: 10px;
         }
 
-        .fa-globe, .fa-facebook, .fa-twitter, .fa-instagram, .fa-tiktok, .fa-youtube {
+        .fa-globe, .fa-facebook, .fa-x-twitter, .fa-instagram, .fa-tiktok, .fa-youtube {
             font-size: 25px;
             color: white;
             margin: 0 10px 0 10px;
         }
 
-        .fa-globe:hover, .fa-facebook:hover, .fa-twitter:hover, .fa-instagram:hover, .fa-tiktok:hover, .fa-youtube:hover {
+        .fa-globe:hover, .fa-facebook:hover, .fa-x-twitter:hover, .fa-instagram:hover, .fa-tiktok:hover, .fa-youtube:hover {
             color: gray;
         }
     </style>
@@ -31,8 +31,12 @@
 </head>
 <body>
     <div class="bg-dark px-5 py-5">
-        <h1 class="text-light text-center mb-3">Trending Topics of <span id="date"></span>
+        <h1 class="text-light text-center mb-3">X Trending Topics of <span id="date"></span>
         </h1>
+        <p class="text-light text-center mb-3">Trends on X (formerly Twitter)</p>
+
+        <!-- Shows "Last updated", a stale-data notice, or an error message -->
+        <div id="status" class="alert alert-secondary text-center" hidden></div>
 
         <!-- HTML tag used to generate a chart -->
         <canvas id="myChart"></canvas>
@@ -43,7 +47,7 @@
             <i class="fa-brands fa-facebook"></i>
         </a>
         <a href="https://x.com/ynm3jrd" target="blank">
-            <i class="fa-brands fa-twitter"></i>
+            <i class="fa-brands fa-x-twitter"></i>
         </a>
         <a href="https://www.instagram.com/mejorada_ayen/" target="blank">
             <i class="fa-brands fa-instagram"></i>
