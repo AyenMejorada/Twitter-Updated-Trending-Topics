@@ -11,10 +11,20 @@
 const TREND_COUNT = 25;
 const STALE_AFTER_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-// Set the header date to today.
 const dateElement = document.getElementById("date");
 const dateOptions = { year: "numeric", month: "long", day: "numeric" };
-dateElement.innerHTML = new Date().toLocaleDateString("en-US", dateOptions);
+
+// Set the heading date. Prefer the date the data was last updated, so an old
+// snapshot does not look like today's trends. Fall back to today if we have
+// no usable lastUpdated value.
+function setHeadingDate(lastUpdated) {
+  const updated = lastUpdated ? new Date(lastUpdated) : null;
+  const dateToShow = updated && !isNaN(updated.getTime()) ? updated : new Date();
+  dateElement.innerHTML = dateToShow.toLocaleDateString("en-US", dateOptions);
+}
+
+// Show today's date until trends.json loads.
+setHeadingDate(null);
 
 const statusElement = document.getElementById("status");
 
@@ -109,8 +119,9 @@ function renderChart(topics, ranks) {
         x: {
           beginAtZero: true,
           ticks: {
-            // Show the actual rank behind the inverted bar length.
-            callback: (value) => `#${TREND_COUNT - value + 1}`,
+            // Hide x-axis tick labels. The inverted bar length is not a
+            // meaningful number to a reader; the rank lives in each bar label.
+            display: false,
           },
         },
       },
@@ -152,10 +163,13 @@ fetch("./trends.json", { cache: "no-store" })
     }
 
     const slice = trends.slice(0, TREND_COUNT);
-    const topics = slice.map((t) => t.name);
     const ranks = slice.map((t, i) => (typeof t.rank === "number" ? t.rank : i + 1));
+    // Label each bar with its rank, like "1. #SB19RocksTheFMA", because the
+    // bar lengths use inverted rank and are not self-explanatory on their own.
+    const topics = slice.map((t, i) => `${ranks[i]}. ${t.name}`);
 
     showStatus(data.lastUpdated);
+    setHeadingDate(data.lastUpdated);
     renderChart(topics, ranks);
   })
   .catch((err) => {

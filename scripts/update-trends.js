@@ -6,8 +6,8 @@
 // - Never write fake or empty data. If the API fails or returns too few
 //   trends, exit non-zero and leave the existing trends.json untouched.
 // - Record a lastUpdated ISO timestamp on every successful write.
-// - The daily call cap is enforced by the workflow schedule (max 4 runs/day),
-//   so this script performs exactly one API call per run.
+// - The workflow schedule runs this 2 times a day (about 60 calls a month,
+//   under the free limit of 100), and it performs exactly one API call per run.
 //
 // Secret: RAPIDAPI_KEY is read from the environment (GitHub Secrets).
 // It is never hardcoded or logged.
