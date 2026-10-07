@@ -1,7 +1,107 @@
 {
-  "_comment": "PLACEHOLDER. This file is overwritten by the Update trends GitHub Action. It intentionally contains no trends. Run the workflow (or wait for the schedule) to populate real data. Do not hand-edit with fake topics.",
-  "lastUpdated": null,
+  "lastUpdated": "2026-10-07T04:22:16.917Z",
   "location": "Philippines",
   "woeid": "23424934",
-  "trends": []
+  "trends": [
+    {
+      "rank": 1,
+      "name": "#SB19RocksTheFMA"
+    },
+    {
+      "rank": 2,
+      "name": "ITS SHOWTIME PEEMAK"
+    },
+    {
+      "rank": 3,
+      "name": "#BINIShinesAtTheFMA"
+    },
+    {
+      "rank": 4,
+      "name": "BINI AT FMA 2026"
+    },
+    {
+      "rank": 5,
+      "name": "#CHANELSpringSummer"
+    },
+    {
+      "rank": 6,
+      "name": "#BACKTOYOU100KViews"
+    },
+    {
+      "rank": 7,
+      "name": "OPPAULO TO KOREA"
+    },
+    {
+      "rank": 8,
+      "name": "fma with wilbert ross"
+    },
+    {
+      "rank": 9,
+      "name": "#MiuNatsha"
+    },
+    {
+      "rank": 10,
+      "name": "SOUMoreFun WithMarielle"
+    },
+    {
+      "rank": 11,
+      "name": "TRAILER KHEMJIRA FOREVER"
+    },
+    {
+      "rank": 12,
+      "name": "FMA MAGNIFIES ASHTINE"
+    },
+    {
+      "rank": 13,
+      "name": "MaMontellano MidWeekGlow"
+    },
+    {
+      "rank": 14,
+      "name": "Security Bank"
+    },
+    {
+      "rank": 15,
+      "name": "Concert of the Year"
+    },
+    {
+      "rank": 16,
+      "name": "Niña Aguilar"
+    },
+    {
+      "rank": 17,
+      "name": "Leslie Cham"
+    },
+    {
+      "rank": 18,
+      "name": "Metrobank"
+    },
+    {
+      "rank": 19,
+      "name": "CAPEATH WITH GMA PLAY"
+    },
+    {
+      "rank": 20,
+      "name": "LISA LOUIS VUITTON SS27"
+    },
+    {
+      "rank": 21,
+      "name": "Yixing"
+    },
+    {
+      "rank": 22,
+      "name": "Messi"
+    },
+    {
+      "rank": 23,
+      "name": "Arcy James Gonzales"
+    },
+    {
+      "rank": 24,
+      "name": "jxj on salon drip"
+    },
+    {
+      "rank": 25,
+      "name": "Public Service Act"
+    }
+  ]
 }
