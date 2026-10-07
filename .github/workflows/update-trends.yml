@@ -1,10 +1,10 @@
 name: Update trends
 
-# Runs every 6 hours (00:00, 06:00, 12:00, 18:00 UTC) = 4 runs per day max,
-# which keeps us inside the RapidAPI free quota. Also runnable on demand.
+# Runs twice a day (00:00 and 12:00 UTC) = about 60 runs a month, safely under
+# the RapidAPI free limit of 100 requests per month. Also runnable on demand.
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 0,12 * * *"
   workflow_dispatch:
 
 # Allow the workflow to push the updated trends.json back to the repo.

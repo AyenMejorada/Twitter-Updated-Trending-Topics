@@ -5,15 +5,13 @@ Philippines as a horizontal bar chart (Chart.js).
 
 Live site: https://ayenmejorada.github.io/Twitter-Updated-Trending-Topics/
 
-Last updated: October 1, 2026
-
 ## How it works
 
 The browser does not call any trends API directly, so no API key ships to the
 client. Instead:
 
 1. A scheduled GitHub Actions workflow (`.github/workflows/update-trends.yml`)
-   runs every 6 hours and on manual trigger.
+   runs every 12 hours and on manual trigger.
 2. It runs `scripts/update-trends.js`, which calls a RapidAPI trends provider
    using the `RAPIDAPI_KEY` secret and writes the top 25 trends (name and rank
    only) to `trends.json`, along with a `lastUpdated` timestamp.
@@ -39,7 +37,7 @@ provider-reported ordering.
 
 This project is free to run. It uses GitHub Actions, GitHub Secrets, and GitHub
 Pages, all free for public repositories, plus a RapidAPI free tier. The
-workflow is capped at 4 calls per day to stay inside the free quota.
+workflow runs 2 calls per day (about 60 a month) to stay inside the free quota.
 
 ### 1. Add the RapidAPI key as a secret
 
@@ -54,7 +52,7 @@ Never commit the key to the repository.
 
 1. Go to the Actions tab in the repository.
 2. If prompted, enable workflows for this repository.
-3. The "Update trends" workflow runs automatically every 6 hours. To run it
+3. The "Update trends" workflow runs automatically every 12 hours. To run it
    now, open it and click "Run workflow" (manual dispatch).
 
 The workflow needs write access to commit `trends.json`. The workflow file

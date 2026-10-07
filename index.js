@@ -27,6 +27,17 @@ function showError(message) {
   console.error(message);
 }
 
+function showEmptyState(message) {
+  // Not an error: trends.json simply has no data yet. Use a calm info style
+  // rather than the red danger style.
+  if (statusElement) {
+    statusElement.textContent = message;
+    statusElement.className = "alert alert-info text-center";
+    statusElement.hidden = false;
+  }
+  console.info(message);
+}
+
 function showStatus(lastUpdated) {
   if (!statusElement) return;
 
@@ -125,13 +136,12 @@ fetch("./trends.json", { cache: "no-store" })
     const trends = Array.isArray(data && data.trends) ? data.trends : [];
 
     // Before the first scheduled run, trends.json is an empty placeholder
-    // (no lastUpdated, no trends). Explain that rather than showing a
-    // confusing generic error.
+    // (no lastUpdated, no trends). Show a friendly message, not a red error.
     if (trends.length === 0) {
-      throw new Error(
-        "No trends have been published yet. Run the \"Update trends\" " +
-          "GitHub Action, then reload this page."
+      showEmptyState(
+        "Trending topics are not available yet. Please check back soon."
       );
+      return;
     }
 
     if (trends.length < TREND_COUNT) {
