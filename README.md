@@ -1,5 +1,13 @@
 # X Trending Topics (formerly Twitter)
 
+## Just want to see it?
+
+No sign-up, no install, no setup. Just click the link and look.
+
+[Open the live site](https://ayenmejorada.github.io/Twitter-Updated-Trending-Topics/)
+
+Want to make your own copy? [Jump to the setup steps below](#want-to-run-your-own-copy).
+
 ## What is this?
 
 This is a small website that shows the top 25 trending topics on X (formerly
@@ -36,6 +44,9 @@ ask for a card to sign up, even for the free plan.
 
 ## Want to run your own copy?
 
+The steps in this section are only for people who want to run their own copy.
+If you just wanted to look around, you are done.
+
 You do not need to be a programmer. Follow these steps:
 
 1. Fork this repository. "Fork" means make your own copy on your GitHub
@@ -67,6 +78,32 @@ The only place it belongs is the `RAPIDAPI_KEY` secret.
 - The Action fails with "RAPIDAPI_KEY is not set". The secret is missing or its
   name is misspelled. Add it again, and make sure the name is exactly
   `RAPIDAPI_KEY`.
+
+## Ideas for future work
+
+These are not built yet. They are just nice things that could be added later.
+
+- Show trends from other countries, with a dropdown to pick one. Right now it
+  only shows the Philippines, so a picker would let more people use it.
+- Keep a history of past trends so the site can show how a topic rose and fell
+  over days or weeks, instead of only the latest snapshot.
+- Add a "Top movers" view that highlights the topics that jumped the most in
+  rank since the last update, so you can spot what is heating up.
+- Add a dark and light mode toggle, so the page is comfortable to read day or
+  night.
+- Make the chart click-through, so tapping a topic opens its search on X and
+  you can see the posts behind it.
+- Show a small "next update in about N hours" countdown, so visitors know how
+  fresh the data is and when it will refresh.
+- Add simple accessibility upgrades, such as screen reader labels for the chart
+  and a plain text list of the same data, so the site works for everyone.
+- Add a usage guard that pauses the robot if the monthly request count gets
+  close to the free limit, so it never runs out unexpectedly.
+- Add a short "Data sources and limits" note so visitors know the data comes
+  from a free provider and may lag a little behind X.
+
+If any of these sound fun, feel free to open an issue or fork the project and
+give it a try.
 
 ## Files
 
